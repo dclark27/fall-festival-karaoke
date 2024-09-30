@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      // add environment variables
+      "env": {
+        "NODE_OPTIONS": "--max-http-header-size=65536"
+      }
+    },
+    {
+      "name": "Next.js turbo: debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev --turbo",
+      "env": {
+        "NODE_OPTIONS": "--max-http-header-size=65536"
+      }
+    }
+  ]
+}
