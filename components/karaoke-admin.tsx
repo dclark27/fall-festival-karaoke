@@ -1,71 +1,163 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { useSortable } from "@dnd-kit/sortable";
+import { useState, useTransition } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MusicIcon, GripVertical, XIcon } from "lucide-react";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from "react-beautiful-dnd";
-import { deleteSignup } from "@/app/actions";
+import { CSS } from "@dnd-kit/utilities";
 import Link from "next/link";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
-interface Signup {
-  id: string;
-  name: string;
-  song: string;
-  artist: string;
-  order: number;
-}
+import { ModeToggle } from "./ui/mode-toggle";
+import { Button } from "./ui/button";
+import {
+  GripVerticalIcon,
+  LoaderCircle,
+  SaveIcon,
+  TrashIcon,
+} from "lucide-react";
+import { deleteSignup, updateAllSignups } from "@/app/actions";
+import { Signup } from "@prisma/client";
+import { cn } from "@/lib/utils";
 
 interface KaraokeAdminProps {
   initialSignups: Signup[];
 }
 
+type Props = {
+  item: Signup;
+};
+
+export const SortableItem = ({ item }: Props) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleting, startTransition] = useTransition();
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div className="flex flex-row gap-2 items-center">
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={cn(
+          "border p-2 rounded-sm flex-grow flex flex-row justify-between cursor-grab",
+          isDragging && "cursor-grabbing"
+        )}
+        {...attributes}
+        {...listeners}
+      >
+        {`${item.name} - ${item.song} - ${item.artist}`}
+        <GripVerticalIcon />
+      </div>
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogTrigger asChild>
+          <Button size="icon" variant="ghost">
+            <TrashIcon className="size-4" />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <form
+            onSubmit={async (event) => {
+              startTransition(async () => {
+                await deleteSignup(item.id);
+                event.preventDefault();
+              });
+            }}
+          >
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {`Delete ${item.name}'s entry of ${item.song} by ${item.artist}`}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <Button type="submit">
+                {isDeleting && (
+                  <LoaderCircle className="size-4 animate-spin mr-2" />
+                )}
+                {!isDeleting && <TrashIcon className="size-4 mr-2" />}
+                Continue
+              </Button>
+            </AlertDialogFooter>
+          </form>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+};
+
 export default function KaraokeAdmin({ initialSignups }: KaraokeAdminProps) {
   const [signups, setSignups] = useState<Signup[]>(initialSignups);
+  const [isSaving, startTransition] = useTransition();
 
-  useEffect(() => {
-    setSignups(initialSignups);
-  }, [initialSignups]);
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-  const onDragEnd = async (result: DropResult) => {
-    if (!result.destination) {
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over) {
       return;
     }
 
-    const items = Array.from(signups);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    if (active.id !== over.id) {
+      const oldIndex = signups.findIndex((v) => v.id === active.id);
+      const newIndex = signups.findIndex((v) => v.id === over.id);
+      setSignups(arrayMove(signups, oldIndex, newIndex));
+    }
+  };
 
-    setSignups(items);
-
-    // Update the order in the database
-    const updatedSignups = items.map((item, index) => ({
-      ...item,
-      order: index + 1,
-    }));
-    await fetch("/api/signups", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedSignups),
+  const handleSave = async () => {
+    startTransition(async () => {
+      await updateAllSignups(signups);
     });
-    // onUpdate();
   };
 
   return (
     <div className="container mx-auto p-4">
-      <nav>
-        <ul>
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-        </ul>
+      <nav className="flex justify-between items-center">
+        <Link href="/">Home</Link>
+        <ModeToggle />
       </nav>
       <h1 className="text-3xl font-bold text-center mb-8">Karaoke Admin</h1>
 
@@ -73,58 +165,44 @@ export default function KaraokeAdmin({ initialSignups }: KaraokeAdminProps) {
         <CardHeader>
           <CardTitle>Manage Signup Queue</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-col gap-2">
           {signups.length === 0 ? (
             <p className="text-center ">No signups in the queue.</p>
           ) : (
-            <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId="signups">
-                {(provided) => (
-                  <ul
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="space-y-2"
-                  >
-                    {signups.map((signup, index) => (
-                      <Draggable
-                        key={signup.id}
-                        draggableId={signup.id}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <li
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className="flex items-center justify-between p-2 bg-primary rounded-md"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <span {...provided.dragHandleProps}>
-                                <GripVertical className="h-4 w-4 cursor-move" />
-                              </span>
-                              <MusicIcon className="h-4 w-4 " />
-                              <span>{signup.name}</span>
-                              <span>-</span>
-                              <span>{signup.song}</span>
-                              <span>by</span>
-                              <span>{signup.artist}</span>
-                            </div>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => deleteSignup(signup.id)}
-                            >
-                              <XIcon className="h-4 w-4" />
-                            </Button>
-                          </li>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </ul>
-                )}
-              </Droppable>
-            </DragDropContext>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={signups}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="flex flex-col gap-2">
+                  {signups.map((item) => (
+                    <SortableItem key={item.id} item={item} />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           )}
+          <div className="flex flex-row gap-2 justify-end">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSignups(initialSignups);
+              }}
+            >
+              Reset
+            </Button>
+            <Button onClick={handleSave} disabled={isSaving}>
+              {isSaving && (
+                <LoaderCircle className="size-4 animate-spin mr-2" />
+              )}
+              {!isSaving && <SaveIcon className="size-4 mr-2" />}
+              Save
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

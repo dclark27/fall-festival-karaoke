@@ -23,6 +23,7 @@ export const createSignup = async (newSignup: {
   });
 
   revalidatePath("/");
+  revalidatePath("/admin");
 
   return signup;
 };
@@ -34,16 +35,29 @@ export const updateSignup = async (id: string, updatedSignup: Signup) => {
   });
 
   revalidatePath("/");
+  revalidatePath("/admin");
 
   return signup;
+};
+
+export const updateAllSignups = async (updatedSignups: Array<Signup>) => {
+  const updateSignupPromises = updatedSignups.map((signup) =>
+    updateSignup(signup.id, signup)
+  );
+  await Promise.all(updateSignupPromises);
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+
+  return await getSignups();
 };
 
 export const deleteSignup = async (id: string) => {
   const deletedSignup = await prisma.signup.delete({
     where: { id },
   });
-
   revalidatePath("/");
+  revalidatePath("/admin");
 
   return deletedSignup;
 };
