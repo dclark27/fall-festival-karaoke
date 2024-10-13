@@ -12,20 +12,21 @@ export default async function Page() {
       <nav className="p-2 flex justify-end">
         <ModeToggle className="top-0 right-0" />
       </nav>
-      <div className="container mx-auto p-4">
+      <main className="container mx-auto max-w-md px-2">
         <Image
           src="/pumpkin.png"
           alt="Fall Festival Logo"
-          width={100}
-          height={50}
-          className="mx-auto"
+          width="0"
+          height="0"
+          sizes="100vw"
+          className="w-20 mb-2 mx-auto h-auto bg-emerald-600 rounded-full p-4"
         />
-        <h1 className="text-2xl font-bold text-center mb-8 dark:text-orange">
+        <h1 className="text-3xl font-bold text-center mb-8 dark:text-orange font-serif tracking-wide">
           Fall Festival Karaoke Signup
         </h1>
         <SignUpForm />
         <SignUpList signups={signups} />
-      </div>
+      </main>
     </>
   );
 }

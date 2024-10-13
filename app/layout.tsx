@@ -1,23 +1,30 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Creepster, Arvo, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "Fall Festival Karaoke",
   description: "Sign up to sing at the Fall Festival Karaoke event",
 };
+
+const creepster = Creepster({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-creepster",
+});
+
+const arvo = Arvo({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-arvo",
+});
+
+const roboto_mono = Roboto_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-roboto-mono",
+});
 
 export default function RootLayout({
   children,
@@ -27,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-zinc-800 text-black dark:text-white`}
+        className={`${creepster.variable} ${arvo.variable} ${roboto_mono.variable} antialiased font-sans bg-white dark:bg-black text-black dark:text-white`}
       >
         <ThemeProvider>{children}</ThemeProvider>
       </body>
