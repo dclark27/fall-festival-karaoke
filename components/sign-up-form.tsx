@@ -84,7 +84,7 @@ export const SignUpForm = () => {
                 <FormItem>
                   <FormLabel className="font-bold text-md">Song Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Song" {...field} />
+                    <Input placeholder="Song" autoComplete="off" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -99,7 +99,7 @@ export const SignUpForm = () => {
                     Artist Name
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Artist" {...field} />
+                    <Input placeholder="Artist" autoComplete="off" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
