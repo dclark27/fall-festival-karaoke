@@ -21,6 +21,7 @@ import {
 } from "@dnd-kit/sortable";
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -107,13 +108,13 @@ export const SortableItem = ({ item }: Props) => {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <Button type="submit">
+              <AlertDialogAction type="submit">
                 {isDeleting && (
                   <LoaderCircle className="size-4 animate-spin mr-2" />
                 )}
                 {!isDeleting && <TrashIcon className="size-4 mr-2" />}
                 Continue
-              </Button>
+              </AlertDialogAction>
             </AlertDialogFooter>
           </form>
         </AlertDialogContent>
@@ -154,57 +155,59 @@ export default function KaraokeAdmin({ initialSignups }: KaraokeAdminProps) {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <>
       <nav className="flex justify-between items-center">
         <Link href="/">Home</Link>
         <ModeToggle />
       </nav>
-      <h1 className="text-3xl font-bold text-center mb-8">Karaoke Admin</h1>
+      <main>
+        <h1 className="text-3xl font-bold text-center mb-8">Karaoke Admin</h1>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Manage Signup Queue</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-2">
-          {signups.length === 0 ? (
-            <p className="text-center ">No signups in the queue.</p>
-          ) : (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={signups}
-                strategy={verticalListSortingStrategy}
+        <Card>
+          <CardHeader>
+            <CardTitle>Manage Signup Queue</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-2">
+            {signups.length === 0 ? (
+              <p className="text-center ">No signups in the queue.</p>
+            ) : (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
               >
-                <div className="flex flex-col gap-2">
-                  {signups.map((item) => (
-                    <SortableItem key={item.id} item={item} />
-                  ))}
-                </div>
-              </SortableContext>
-            </DndContext>
-          )}
-          <div className="flex flex-row gap-2 justify-end">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setSignups(initialSignups);
-              }}
-            >
-              Reset
-            </Button>
-            <Button onClick={handleSave} disabled={isSaving}>
-              {isSaving && (
-                <LoaderCircle className="size-4 animate-spin mr-2" />
-              )}
-              {!isSaving && <SaveIcon className="size-4 mr-2" />}
-              Save
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+                <SortableContext
+                  items={signups}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="flex flex-col gap-2">
+                    {signups.map((item) => (
+                      <SortableItem key={item.id} item={item} />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            )}
+            <div className="flex flex-row gap-2 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSignups(initialSignups);
+                }}
+              >
+                Reset
+              </Button>
+              <Button onClick={handleSave} disabled={isSaving}>
+                {isSaving && (
+                  <LoaderCircle className="size-4 animate-spin mr-2" />
+                )}
+                {!isSaving && <SaveIcon className="size-4 mr-2" />}
+                Save
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    </>
   );
 }

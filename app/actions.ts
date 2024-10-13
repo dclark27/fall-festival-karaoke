@@ -49,7 +49,9 @@ export const updateAllSignups = async (updatedSignups: Array<Signup>) => {
   revalidatePath("/");
   revalidatePath("/admin");
 
-  return await getSignups();
+  return await prisma.signup.findMany({
+    orderBy: { order: "asc" },
+  });
 };
 
 export const deleteSignup = async (id: string) => {

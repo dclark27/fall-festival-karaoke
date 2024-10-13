@@ -4,5 +4,9 @@ import KaraokeAdmin from "@/components/karaoke-admin";
 export default async function Page() {
   const signups = await getSignups();
 
-  return <KaraokeAdmin initialSignups={signups} />;
+  return (
+    <div className="container mx-auto max-w-md px-2">
+      <KaraokeAdmin initialSignups={signups} />
+    </div>
+  );
 }
