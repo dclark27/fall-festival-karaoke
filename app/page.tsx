@@ -10,7 +10,7 @@ export default async function Page() {
   return (
     <>
       <nav className="p-2 flex justify-end">
-        <ModeToggle className="top-0 right-0" />
+        <ModeToggle />
       </nav>
       <main className="container mx-auto max-w-md px-2">
         <Image

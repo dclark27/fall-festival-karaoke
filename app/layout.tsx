@@ -36,7 +36,14 @@ export default function RootLayout({
       <body
         className={`${creepster.variable} ${arvo.variable} ${roboto_mono.variable} antialiased font-sans bg-white dark:bg-black text-black dark:text-white`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

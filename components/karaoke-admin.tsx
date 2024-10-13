@@ -11,6 +11,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { deleteSignup } from "@/app/actions";
+import Link from "next/link";
 
 interface Signup {
   id: string;
@@ -59,6 +60,13 @@ export default function KaraokeAdmin({ initialSignups }: KaraokeAdminProps) {
 
   return (
     <div className="container mx-auto p-4">
+      <nav>
+        <ul>
+          <li>
+            <Link href="/">Home</Link>
+          </li>
+        </ul>
+      </nav>
       <h1 className="text-3xl font-bold text-center mb-8">Karaoke Admin</h1>
 
       <Card>
