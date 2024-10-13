@@ -1,4 +1,6 @@
-import { NextResponse } from "next/server";
+"use server";
+
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -10,20 +12,18 @@ export async function GET() {
   return NextResponse.json(signups);
 }
 
-export async function POST(request: Request) {
-  const body: { name: string; song: string; artist: string } =
-    await request.json();
+export async function POST(signupBody: {
+  name: string;
+  song: string;
+  artist: string;
+}) {
   const signup = await prisma.signup.create({
-    data: {
-      name: body.name,
-      song: body.song,
-      artist: body.artist,
-    },
+    data: signupBody,
   });
   return NextResponse.json(signup);
 }
 
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
   const body: { id: string; order: number }[] = await request.json();
   const updatedSignups = await prisma.$transaction(
     body.map((signup) =>
@@ -36,7 +36,7 @@ export async function PUT(request: Request) {
   return NextResponse.json(updatedSignups);
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   const body: { id: string } = await request.json();
   const deletedSignup = await prisma.signup.delete({
     where: { id: body.id },
