@@ -29,10 +29,15 @@ export const SignUpList = ({ signups }: { signups: Signup[] }) => {
           variant="outline"
           className="w-full p-4 h-24 rounded-none border-t"
         >
-          <div className="w-full flex items-center justify-between">
-            <div className="flex-1 text-left">
+          <div className="flex flex-row justify-between w-full items-center gap-4">
+            <div className="flex flex-col items-start flex-grow">
+              <div className="flex flex-row justify-between w-full items-center font-bold text-lg">
+                <span>Up Now</span>
+                <span>{currentSong.name}</span>
+              </div>
+
               <ScrollingText
-                text={`${currentSong.name} singing ${currentSong.song} by ${currentSong.artist}`}
+                text={`${currentSong.song} by ${currentSong.artist}`}
               />
             </div>
             <ChevronUp className="ml-2 h-4 w-4" />
