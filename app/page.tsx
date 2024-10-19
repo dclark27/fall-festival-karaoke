@@ -8,7 +8,7 @@ export default async function Page() {
   const signups = await getSignups();
 
   return (
-    <div className="container mx-auto max-w-md px-2 flex flex-col min-h-screen">
+    <div className="container mx-auto max-w-md px-2 flex flex-col min-h-dvh">
       <nav className="p-2 flex justify-end">
         <ModeToggle />
       </nav>
