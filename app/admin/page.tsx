@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteSignup } from "../actions";
 import { revalidatePath } from "next/cache";
-import { sign } from "crypto";
 
 export default async function Page() {
   const signups = await getSignups();
