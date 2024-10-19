@@ -160,7 +160,7 @@ export default async function Page() {
         <h1 className="text-3xl font-bold text-center mb-8 dark:text-orange font-serif tracking-wide">
           Karaoke Admin
         </h1>
-        {signups.map((signup, index) => (
+        {signups.map((signup) => (
           <div key={signup.id} className="mb-4 p-4 border rounded-lg">
             <div className="flex flex-row justify-between items-center">
               <div className="flex flex-col">

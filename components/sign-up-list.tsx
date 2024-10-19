@@ -52,7 +52,7 @@ export const SignUpList = ({ signups }: { signups: Signup[] }) => {
           </DrawerDescription>
         </DrawerHeader>
         <ScrollArea className="h-[50vh] px-4">
-          {upcomingSongs.map((signup, index) => (
+          {upcomingSongs.map((signup) => (
             <div key={signup.id} className="mb-4 p-4 border rounded-lg">
               <h3 className="font-semibold flex flex-row gap-1 items-center">
                 <MicIcon className="size-4" />
