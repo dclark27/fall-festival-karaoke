@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 
 const formSchema = z.object({
-  name: z.string().min(1, {
+  singerAlias: z.string().min(1, {
     message: "Required",
   }),
   song: z.string().min(1, {
@@ -33,19 +33,19 @@ export const SignUpForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      singerAlias: "",
       artist: "",
       song: "",
     },
   });
 
   const onSubmit = async ({
-    name,
+    singerAlias,
     song,
     artist,
   }: z.infer<typeof formSchema>) => {
     const newSignup = {
-      name,
+      name: singerAlias,
       song,
       artist,
     };
@@ -66,10 +66,10 @@ export const SignUpForm = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <FormField
               control={form.control}
-              name="name"
+              name="singerAlias"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold text-md">Name</FormLabel>
+                  <FormLabel className="font-bold text-md">Your Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Name" {...field} />
                   </FormControl>

@@ -8,11 +8,11 @@ export default async function Page() {
   const signups = await getSignups();
 
   return (
-    <div className="container mx-auto max-w-md px-2">
+    <div className="container mx-auto max-w-md px-2 flex flex-col min-h-screen">
       <nav className="p-2 flex justify-end">
         <ModeToggle />
       </nav>
-      <main>
+      <main className="flex-grow">
         <Image
           src="/pumpkin.png"
           alt="Fall Festival Logo"
@@ -25,8 +25,8 @@ export default async function Page() {
           Fall Festival Karaoke Signup
         </h1>
         <SignUpForm />
-        <SignUpList signups={signups} />
       </main>
+      <SignUpList signups={signups} />
     </div>
   );
 }
