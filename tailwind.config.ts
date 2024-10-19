@@ -9,6 +9,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      animation: {
+        marquee: "marquee var(--duration, 5s) linear infinite",
+      },
+      keyframes: {
+        marquee: {
+          to: { transform: "translateX(-50%)" },
+        },
+      },
       fontFamily: {
         sans: ["var(--font-arvo)"],
         serif: ["var(--font-creepster)"],

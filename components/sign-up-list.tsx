@@ -1,34 +1,68 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { ChevronUp, MicIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Signup } from "@prisma/client";
-import { MusicIcon } from "lucide-react";
+import { ScrollingText } from "./scrolling-text";
 
 export const SignUpList = ({ signups }: { signups: Signup[] }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const currentSong = signups[0];
+  const upcomingSongs = signups.slice(1);
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-xl">Current Signups</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {signups.length === 0 ? (
-          <p className="text-center">No signups yet. Be the first!</p>
-        ) : (
-          <ul className="space-y-2">
-            {signups.map((signup) => (
-              <li
-                key={signup.id}
-                className="flex items-center space-x-2 p-2 bg-primary rounded-md text-white font-bold"
-              >
-                <MusicIcon className="size-6" />
-                <span>{signup.name}</span>
-                <span>-</span>
-                <span className="italic">{signup.song}</span>
-                <span>by</span>
-                <span>{signup.artist}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </CardContent>
-    </Card>
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+      <DrawerTrigger asChild>
+        <Button
+          variant="outline"
+          className="w-full p-4 h-24 rounded-none border-t"
+        >
+          <div className="w-full flex items-center justify-between">
+            <div className="flex-1 text-left">
+              <ScrollingText
+                text={`${currentSong.name} singing ${currentSong.song} by ${currentSong.artist}`}
+              />
+            </div>
+            <ChevronUp className="ml-2 h-4 w-4" />
+          </div>
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Upcoming Karaoke Songs</DrawerTitle>
+          <DrawerDescription>
+            Scroll to see all upcoming performances
+          </DrawerDescription>
+        </DrawerHeader>
+        <ScrollArea className="h-[50vh] px-4">
+          {upcomingSongs.map((signup, index) => (
+            <div key={signup.id} className="mb-4 p-4 border rounded-lg">
+              <h3 className="font-semibold flex flex-row gap-1 items-center">
+                <MicIcon className="size-4" />
+                {signup.name}
+              </h3>
+              <ScrollingText text={`${signup.song} by ${signup.artist}`} />
+            </div>
+          ))}
+        </ScrollArea>
+        <DrawerFooter>
+          <DrawerClose asChild>
+            <Button variant="outline">Close</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 };
