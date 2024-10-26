@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Creepster, Arvo, Roboto_Mono } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default function RootLayout({
       <body
         className={`${creepster.variable} ${arvo.variable} ${roboto_mono.variable} antialiased font-sans bg-white dark:bg-black text-black dark:text-white`}
       >
+        <Analytics />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
