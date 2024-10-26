@@ -1,6 +1,6 @@
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { getSignups, updateAllSignups, updateSignup } from "../actions";
-import { MicIcon, MoreVertical } from "lucide-react";
+import { MicIcon, MoreVertical, SkipForwardIcon } from "lucide-react";
 import { ScrollingText } from "@/components/scrolling-text";
 import {
   DropdownMenu,
@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteSignup } from "../actions";
 import { revalidatePath } from "next/cache";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function Page() {
   const signups = await getSignups();
@@ -157,10 +159,13 @@ export default async function Page() {
         <ModeToggle />
       </nav>
       <main className="flex-grow">
-        <h1 className="text-3xl font-bold text-center mb-8 dark:text-orange font-serif tracking-wide">
-          Karaoke Admin
-        </h1>
-        {signups.map((signup) => (
+        <div className="flex flex-col items-center justify-center mb-8">
+          <h1 className="text-3xl font-bold text-center  dark:text-orange font-serif tracking-wide">
+            Karaoke Admin
+          </h1>
+          <Link href="/">Go Home</Link>
+        </div>
+        {signups.map((signup, index) => (
           <div key={signup.id} className="mb-4 p-4 border rounded-lg">
             <div className="flex flex-row justify-between items-center">
               <div className="flex flex-col">
@@ -169,6 +174,15 @@ export default async function Page() {
                   {signup.name}
                 </h3>
                 <ScrollingText text={`${signup.song} by ${signup.artist}`} />
+                {index === 0 && (
+                  <form action={deleteSong}>
+                    <input type="hidden" name="id" value={signup.id} />
+                    <Button type="submit">
+                      <SkipForwardIcon className="size-4 mr-2" />
+                      Next Song
+                    </Button>
+                  </form>
+                )}
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger>
