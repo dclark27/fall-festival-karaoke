@@ -3,8 +3,6 @@ import { SignUpList } from "@/components/sign-up-list";
 import Image from "next/image";
 import { getSignups } from "./actions";
 import { ModeToggle } from "@/components/ui/mode-toggle";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Terminal } from "lucide-react";
 
 export default async function Page() {
   const signups = await getSignups();

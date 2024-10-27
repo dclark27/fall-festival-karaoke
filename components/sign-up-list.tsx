@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronUp, MicIcon } from "lucide-react";
+import { ChevronUp, MicIcon, MusicIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -34,12 +34,13 @@ export const SignUpList = ({ signups }: { signups: Signup[] }) => {
           <div className="flex flex-row justify-between w-full items-center gap-4">
             {currentSong && (
               <div className="flex flex-col items-start flex-grow">
-                <div className="flex flex-row justify-between w-full items-center font-bold text-lg">
-                  <span>Up Now</span>
+                <div className="animate-pulse flex flex-row gap-2 w-full items-center font-bold text-lg">
+                  <MusicIcon />
                   <span>{currentSong.name}</span>
                 </div>
 
                 <ScrollingText
+                  className="animate-pulse"
                   text={`${currentSong.song} by ${currentSong.artist}`}
                 />
               </div>

@@ -1,8 +1,15 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 
-export const ScrollingText = ({ text }: { text: string }) => {
+export const ScrollingText = ({
+  text,
+  className,
+}: {
+  text: string;
+  className?: string;
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const [shouldScroll, setShouldScroll] = useState(false);
@@ -28,9 +35,10 @@ export const ScrollingText = ({ text }: { text: string }) => {
     >
       <div
         ref={textRef}
-        className={
-          shouldScroll ? "inline-block animate-float-scroll" : "inline-block"
-        }
+        className={cn(
+          shouldScroll ? "inline-block animate-float-scroll" : "inline-block",
+          className
+        )}
         style={
           shouldScroll
             ? ({ "--duration": `${animationDuration}s` } as React.CSSProperties)
