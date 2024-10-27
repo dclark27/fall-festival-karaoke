@@ -26,14 +26,6 @@ export default async function Page() {
         <h1 className="text-3xl font-bold text-center mb-8 dark:text-orange font-serif tracking-wide">
           Fall Festival Karaoke Signup
         </h1>
-        <Alert variant={"destructive"} className="mb-2">
-          <Terminal className="h-4 w-4" />
-          <AlertTitle>HEY!</AlertTitle>
-          <AlertDescription>
-            Karaoke will start around 8, or when everyone is drunk enough! Get
-            in line now though! LOL
-          </AlertDescription>
-        </Alert>
         <SignUpForm />
       </main>
       <SignUpList signups={signups} />
