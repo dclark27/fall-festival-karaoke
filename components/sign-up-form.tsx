@@ -105,8 +105,9 @@ export const SignUpForm = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full font-bold text-lg">
-              <MicIcon className="size-6 mr-2" /> Sign Up
+            <Button type="submit" className="w-full font-bold text-lg" disabled>
+              <MicIcon className="size-6 mr-2" /> Sign Ups have closed for the
+              night!
             </Button>
           </form>
         </Form>
